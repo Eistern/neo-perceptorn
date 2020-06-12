@@ -18,7 +18,7 @@ int main() {
 
     for (int i = 0; i < 100; ++i) {
         s_layer.train(std::vector<float**>{images[0].getData()}, images[0].getLength());
+        s_layer.print();
     }
-    s_layer.print();
     return 0;
 }

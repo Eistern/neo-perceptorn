@@ -19,10 +19,10 @@ SPane::SPane(const VNode *connected_v_node, unsigned int radius) {
     this->connected_v_node = connected_v_node;
     this->radius = radius;
     this->weight_b = 0.0f;
-    this->weights_a = (float **) malloc(sizeof(float *) * radius);
+    this->weights_a = new float *[radius];
 
     for (int i = 0; i < radius * 2 + 1; ++i) {
-        this->weights_a[i] = (float *) malloc(sizeof(float) * (radius * 2 + 1));
+        this->weights_a[i] = new float[radius * 2 + 1];
 
         for (int j = 0; j < radius * 2 + 1; ++j) {
             this->weights_a[i][j] = real_distribution(generator);
@@ -41,6 +41,8 @@ SPane::single_compute(const std::vector<float **> &input, unsigned length, int b
                 //Computing S neuron
                 float input_value = Utils::get_2d_input_safe(input_layer, base_vector_x + add_vector_x, base_vector_y + add_vector_y, length);
                 float interconnection = input_value;
+                if (interconnection != 0)
+                    input_value = interconnection;
                 interconnection *= this->weights_a[add_vector_y + this->radius][add_vector_x + this->radius];
                 result += interconnection;
 
@@ -113,10 +115,17 @@ float SPane::activation_fun(const float input) {
 }
 
 void SPane::print_result() const {
-    std::cout << "Pane weights" << std::endl;
+    std::cout << "Pane weights (logic)" << std::endl;
     for (int i = 0; i < radius * 2 + 1; ++i) {
         for (int j = 0; j < radius * 2 + 1; ++j) {
             std::cout << (this->weights_a[i][j] < 1 ? 0 : 1) << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "Pane weights (real)" << std::endl;
+    for (int i = 0; i < radius * 2 + 1; ++i) {
+        for (int j = 0; j < radius * 2 + 1; ++j) {
+            std::cout << this->weights_a[i][j] << " ";
         }
         std::cout << std::endl;
     }

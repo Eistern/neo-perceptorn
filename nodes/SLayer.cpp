@@ -31,9 +31,9 @@ bool SLayer::train(const std::vector<float **>& input, const unsigned length) {
     }
 
     if (result) {
-        auto new_pane = SPane(&panes_v_node);
-        prev_results.push_back(new_pane.compute(input, length));
-        feature_panes.emplace_back(new_pane);
+        auto* new_pane = new SPane(&panes_v_node);
+        prev_results.push_back(new_pane->compute(input, length));
+        feature_panes.emplace_back(*new_pane);
     }
 
     for (int base_y = 0; base_y < length; ++base_y) {
@@ -47,7 +47,7 @@ bool SLayer::train(const std::vector<float **>& input, const unsigned length) {
                 }
             }
 
-            if (layer_num == -1 && !vCheckTileIsEmpty(base_y, base_x)) {
+            if (layer_num != -1) {
                 candidates[layer_num].push_back(std::pair<int, int>(base_y, base_x));
             }
         }
